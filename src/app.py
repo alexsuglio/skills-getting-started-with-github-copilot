@@ -10,14 +10,14 @@ from typing import Annotated
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
+from pydantic import EmailStr
 import os
 from pathlib import Path
 
 app = FastAPI(title="Mergington High School API",
               description="API for viewing and signing up for extracurricular activities")
 
-EMAIL_PATTERN = r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$"
-EmailParam = Annotated[str, Query(min_length=3, max_length=254, pattern=EMAIL_PATTERN)]
+EmailParam = Annotated[EmailStr, Query()]
 
 # Mount the static files directory
 current_dir = Path(__file__).parent

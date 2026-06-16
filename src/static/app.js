@@ -41,14 +41,10 @@ document.addEventListener("DOMContentLoaded", () => {
         availability.append(availabilityLabel, ` ${spotsLeft} spots left`);
         const participantsSection = document.createElement("div");
         participantsSection.className = "participants-section";
-        const participantsTitle = createTextElement(
-          "p",
-          "Participants:",
-          "participants-title"
-        );
+        const participantsTitle = document.createElement("p");
+        participantsTitle.className = "participants-title";
         const participantsTitleLabel = document.createElement("strong");
-        participantsTitleLabel.textContent = participantsTitle.textContent;
-        participantsTitle.textContent = "";
+        participantsTitleLabel.textContent = "Participants:";
         participantsTitle.appendChild(participantsTitleLabel);
         const participantsList = document.createElement("ul");
         participantsList.className = "participants-list";
