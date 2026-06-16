@@ -4,6 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
 
+  function createTextElement(tagName, text, className) {
+    const element = document.createElement(tagName);
+    if (className) {
+      element.className = className;
+    }
+    element.textContent = text;
+    return element;
+  }
+
   // Function to fetch activities from API
   async function fetchActivities() {
     try {
@@ -20,38 +29,68 @@ document.addEventListener("DOMContentLoaded", () => {
         activityCard.className = "activity-card";
 
         const spotsLeft = details.max_participants - details.participants.length;
-        const participantsList =
-          details.participants.length > 0
-            ? details.participants
-                .map(
-                  (participant) =>
-                    `<li class="participant-item">
-                      <span class="participant-email">${participant}</span>
-                      <button
-                        type="button"
-                        class="participant-remove"
-                        data-activity="${encodeURIComponent(name)}"
-                        data-email="${encodeURIComponent(participant)}"
-                        aria-label="Remove ${participant}"
-                        title="Unregister participant"
-                      >&times;</button>
-                    </li>`
-                )
-                .join("")
-            : '<li class="participant-empty">No participants yet</li>';
+        const title = createTextElement("h4", name);
+        const description = createTextElement("p", details.description);
+        const schedule = document.createElement("p");
+        const scheduleLabel = document.createElement("strong");
+        scheduleLabel.textContent = "Schedule:";
+        schedule.append(scheduleLabel, ` ${details.schedule}`);
+        const availability = document.createElement("p");
+        const availabilityLabel = document.createElement("strong");
+        availabilityLabel.textContent = "Availability:";
+        availability.append(availabilityLabel, ` ${spotsLeft} spots left`);
+        const participantsSection = document.createElement("div");
+        participantsSection.className = "participants-section";
+        const participantsTitle = createTextElement(
+          "p",
+          "Participants:",
+          "participants-title"
+        );
+        const participantsTitleLabel = document.createElement("strong");
+        participantsTitleLabel.textContent = participantsTitle.textContent;
+        participantsTitle.textContent = "";
+        participantsTitle.appendChild(participantsTitleLabel);
+        const participantsList = document.createElement("ul");
+        participantsList.className = "participants-list";
 
-        activityCard.innerHTML = `
-          <h4>${name}</h4>
-          <p>${details.description}</p>
-          <p><strong>Schedule:</strong> ${details.schedule}</p>
-          <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
-          <div class="participants-section">
-            <p class="participants-title"><strong>Participants:</strong></p>
-            <ul class="participants-list">
-              ${participantsList}
-            </ul>
-          </div>
-        `;
+        if (details.participants.length > 0) {
+          details.participants.forEach((participant) => {
+            const participantItem = document.createElement("li");
+            participantItem.className = "participant-item";
+
+            const participantEmail = createTextElement(
+              "span",
+              participant,
+              "participant-email"
+            );
+            const removeButton = createTextElement(
+              "button",
+              "×",
+              "participant-remove"
+            );
+            removeButton.type = "button";
+            removeButton.dataset.activity = encodeURIComponent(name);
+            removeButton.dataset.email = encodeURIComponent(participant);
+            removeButton.setAttribute("aria-label", `Remove ${participant}`);
+            removeButton.title = "Unregister participant";
+
+            participantItem.append(participantEmail, removeButton);
+            participantsList.appendChild(participantItem);
+          });
+        } else {
+          participantsList.appendChild(
+            createTextElement("li", "No participants yet", "participant-empty")
+          );
+        }
+
+        participantsSection.append(participantsTitle, participantsList);
+        activityCard.append(
+          title,
+          description,
+          schedule,
+          availability,
+          participantsSection
+        );
 
         activitiesList.appendChild(activityCard);
 
