@@ -59,15 +59,19 @@ document.addEventListener("DOMContentLoaded", () => {
               participant,
               "participant-email"
             );
-            const removeButton = createTextElement(
-              "button",
-              "×",
-              "participant-remove"
-            );
+            const removeButton = document.createElement("button");
+            removeButton.className = "participant-remove";
             removeButton.type = "button";
             removeButton.dataset.activity = encodeURIComponent(name);
             removeButton.dataset.email = encodeURIComponent(participant);
-            removeButton.setAttribute("aria-label", "Remove participant");
+            const removeIcon = createTextElement("span", "×");
+            removeIcon.setAttribute("aria-hidden", "true");
+            const removeLabel = createTextElement(
+              "span",
+              `Remove ${participant}`,
+              "sr-only"
+            );
+            removeButton.append(removeIcon, removeLabel);
             removeButton.title = "Unregister participant";
 
             participantItem.append(participantEmail, removeButton);
