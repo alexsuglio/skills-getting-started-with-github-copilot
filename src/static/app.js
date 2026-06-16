@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
             removeButton.type = "button";
             removeButton.dataset.activity = encodeURIComponent(name);
             removeButton.dataset.email = encodeURIComponent(participant);
-            removeButton.setAttribute("aria-label", `Remove ${participant}`);
+            removeButton.setAttribute("aria-label", "Remove participant");
             removeButton.title = "Unregister participant";
 
             participantItem.append(participantEmail, removeButton);
