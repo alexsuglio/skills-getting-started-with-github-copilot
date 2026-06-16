@@ -42,3 +42,17 @@ def test_signup_returns_400_for_duplicate_participant(client):
     # Assert
     assert response.status_code == 400
     assert payload["detail"] == "Student already signed up"
+
+
+def test_signup_rejects_invalid_email_input(client):
+    # Arrange
+    activity_name = "Chess Club"
+    email = '"><script>alert(1)</script>'
+
+    # Act
+    response = client.post(f"/activities/{activity_name}/signup", params={"email": email})
+    after = client.get("/activities").json()[activity_name]["participants"]
+
+    # Assert
+    assert response.status_code == 422
+    assert email not in after

@@ -42,3 +42,15 @@ def test_unregister_returns_404_for_student_not_signed_up(client):
     # Assert
     assert response.status_code == 404
     assert payload["detail"] == "Student is not signed up for this activity"
+
+
+def test_unregister_rejects_invalid_email_input(client):
+    # Arrange
+    activity_name = "Chess Club"
+    email = '"><script>alert(1)</script>'
+
+    # Act
+    response = client.delete(f"/activities/{activity_name}/signup", params={"email": email})
+
+    # Assert
+    assert response.status_code == 422
